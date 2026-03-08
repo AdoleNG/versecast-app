@@ -169,20 +169,19 @@ export default function VerseCastMarketingSite() {
               </div>
 
               <h1 className="max-w-3xl text-4xl font-bold tracking-tight text-slate-950 sm:text-5xl lg:text-6xl">
-                Keep your congregation engaged with Scripture displayed in real timea as you speak.
+                Keep your congregation engaged with Scripture displayed in real time as you speak.
                 
               </h1>
 
               <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600">
                 VerseCast is an AI-driven Bible display platform that helps
-                churches show the right Bible passage during live preaching. It
-                can detect references or paraphrases spoken by the minister and
-                surface the exact Bible passage instantly on the control panel,
-                allowing the media team to approve and project it on screen. The
-                result is faster response during sermons, reduced cognitive load
-                for ministers and operators, and clearer engagement for the
-                congregation.
-              </p>
+                churches project the Bible passage during live sermon. It
+                auto-displays explicit bible references as you speak and if paraphrases 
+                are used, Versecast surfaces the bible passage being paraphrased on the 
+                control panel, allowing the media team to approve and project it on screen.
+                The result is faster response during sermons, reduced cognitive load
+                for ministers and operators, and clearer engagement for the congregation.
+               </p>
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <a
