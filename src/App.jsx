@@ -169,7 +169,7 @@ export default function VerseCastMarketingSite() {
               </div>
 
               <h1 className="max-w-3xl text-4xl font-bold tracking-tight text-slate-950 sm:text-5xl lg:text-6xl">
-                Keep your congregation engaged with Scripture displayed clearly and in real time whenever the Word is mentioned.
+                Keep your congregation engaged with Scripture displayed in real timea as you speak.
                 
               </h1>
 
