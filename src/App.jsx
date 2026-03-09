@@ -1,3 +1,5 @@
+import verseCastLogo from "../VerseCastLogo.jpg";
+
 export default function VerseCastMarketingSite() {
   const heroCards = [
     [
@@ -122,9 +124,11 @@ export default function VerseCastMarketingSite() {
       <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#2b124c] text-lg font-bold text-[#f9e79f] shadow-sm">
-              V
-            </div>
+            <img
+              src={verseCastLogo}
+              alt="VerseCast logo"
+              className="h-12 w-12 rounded-xl object-cover shadow-sm"
+            />
             <div>
               <div className="text-lg font-semibold tracking-tight">VerseCast</div>
               <div className="text-xs text-slate-500">
@@ -164,6 +168,14 @@ export default function VerseCastMarketingSite() {
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(249,231,159,0.28),_transparent_28%),radial-gradient(circle_at_left,_rgba(43,18,76,0.07),_transparent_35%)]" />
           <div className="relative mx-auto grid max-w-7xl gap-12 px-6 py-20 lg:grid-cols-2 lg:px-8 lg:py-28">
             <div className="flex flex-col justify-center">
+              <div className="mb-6">
+                <img
+                  src={verseCastLogo}
+                  alt="VerseCast logo"
+                  className="h-auto w-44 rounded-2xl shadow-lg sm:w-52"
+                />
+              </div>
+
               <div className="mb-4 inline-flex w-fit items-center rounded-full border border-[#f9e79f]/60 bg-[#fff9db] px-3 py-1 text-sm font-medium text-[#6a5712]">
                 Built for churches, conferences, and ministry teams
               </div>
@@ -174,15 +186,14 @@ export default function VerseCastMarketingSite() {
               </h1>
 
               <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600">
-                VerseCast is an AI‑powered Bible display platform designed
-                to help churches project Scripture seamlessly during live sermons. 
+                VerseCast is an AI-powered Bible display platform designed
+                to help churches project Scripture seamlessly during live sermons.
                 As the minister speaks, VerseCast automatically recognizes
                 explicit Bible references and displays them on screen without any manual input.
                 When a speaker paraphrases a passage, VerseCast intelligently surfaces
                 the matching bible passage on the Control Panel, allowing the
                 media team to quickly confirm and project it. This keeps the minister’s flow
                 uninterrupted and ensures the congregation always sees the right verse at the right moment
-                
               </p>
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
