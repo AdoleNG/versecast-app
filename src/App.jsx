@@ -1,4 +1,50 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+
+/* ----------------------------- StyleInjector -----------------------------
+   Injects small CSS utilities (fluid typography + reduced motion) so you
+   can paste this single file without editing index.css immediately.
+   You can later move these rules into src/index.css if you prefer.
+------------------------------------------------------------------------- */
+function StyleInjector() {
+  useEffect(() => {
+    const id = "versecast-fluid-utilities";
+    if (document.getElementById(id)) return;
+    const style = document.createElement("style");
+    style.id = id;
+    style.innerHTML = `
+      :root{
+        --fluid-h1-min: 1.6rem;
+        --fluid-h1-max: 3.75rem;
+        --fluid-body-min: 0.95rem;
+        --fluid-body-max: 1.125rem;
+      }
+
+      .h1-fluid {
+        font-size: clamp(var(--fluid-h1-min), 6.5vw, var(--fluid-h1-max));
+        line-height: 1.05;
+      }
+
+      .text-fluid {
+        font-size: clamp(var(--fluid-body-min), 1.6vw, var(--fluid-body-max));
+        line-height: 1.5;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+      }
+
+      /* small helper to animate menu height smoothly */
+      .transition-max-h {
+        transition: max-height 260ms cubic-bezier(.2,.9,.2,1);
+      }
+    `;
+    document.head.appendChild(style);
+    return () => {
+      // keep it for the session; no cleanup to avoid flicker on HMR
+    };
+  }, []);
+  return null;
+}
 
 /* ----------------------------- Header ----------------------------- */
 function Header() {
@@ -45,7 +91,7 @@ function Header() {
         </div>
       </div>
 
-      <div className={`lg:hidden transition-max-h duration-300 ease-in-out overflow-hidden bg-white border-t border-slate-100 ${open ? "max-h-[420px]" : "max-h-0"}`}>
+      <div className={`lg:hidden transition-max-h overflow-hidden bg-white border-t border-slate-100 ${open ? "max-h-[420px]" : "max-h-0"}`}>
         <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6">
           <nav className="flex flex-col gap-3 text-base text-slate-700">
             <a href="#how-it-works" onClick={() => setOpen(false)} className="rounded-md px-3 py-2 hover:bg-slate-50">How it works</a>
@@ -107,21 +153,21 @@ function Hero({ heroCards }) {
     <section className="relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(249,231,159,0.28),_transparent_28%),radial-gradient(circle_at_left,_rgba(43,18,76,0.07),_transparent_35%)]" />
 
-      <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-10 sm:px-6 sm:py-14 lg:grid-cols-2 lg:gap-14 lg:px-8 lg:py-20">
+      <div className="relative mx-auto grid max-w-7xl gap-8 px-4 py-8 sm:px-6 sm:py-14 lg:grid-cols-2 lg:gap-14 lg:px-8 lg:py-20">
         <div className="flex flex-col justify-center">
-          <div className="mb-4 inline-flex w-fit max-w-full rounded-full border border-[#f9e79f]/60 bg-[#fff9db] px-3 py-1.5 text-xs font-medium text-[#6a5712] sm:text-sm">
+          <div className="mb-3 inline-flex w-fit max-w-full rounded-full border border-[#f9e79f]/60 bg-[#fff9db] px-3 py-1.5 text-xs font-medium text-[#6a5712] sm:text-sm">
             Built for churches, conferences, and ministry teams
           </div>
 
-          <h1 className="max-w-2xl text-3xl font-bold tracking-tight text-slate-950 sm:text-5xl lg:text-6xl">
+          <h1 className="max-w-2xl h1-fluid font-bold tracking-tight text-slate-950">
             Display the right Bible passage in real time during live preaching.
           </h1>
 
-          <p className="mt-4 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg sm:leading-8">
+          <p className="mt-3 max-w-2xl text-fluid text-slate-600">
             VerseCast helps churches detect spoken Bible references and paraphrased Bible passages during sermons, then shows the result on a control panel so the media team can review and display it with confidence.
           </p>
 
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-4 flex flex-col gap-3 sm:flex-row">
             <a
               href="#contact"
               className="inline-flex min-h-[48px] items-center justify-center rounded-2xl bg-[#2b124c] px-5 text-base font-semibold text-white shadow-sm transition hover:translate-y-[-1px]"
@@ -136,7 +182,7 @@ function Hero({ heroCards }) {
             </a>
           </div>
 
-          <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {heroCards.map(([title, text]) => (
               <div key={title} className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
                 <div className="text-lg font-semibold text-slate-900">{title}</div>
@@ -157,7 +203,7 @@ function Hero({ heroCards }) {
 /* ----------------------------- HowItWorks ----------------------------- */
 function HowItWorks({ workflowSteps }) {
   return (
-    <section id="how-it-works" className="border-y border-slate-200 bg-slate-50/70 py-12 sm:py-16">
+    <section id="how-it-works" className="border-y border-slate-200 bg-slate-50/70 py-10 sm:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <div className="text-sm font-semibold uppercase tracking-[0.22em] text-[#2b124c] sm:text-base">How it works</div>
@@ -165,7 +211,7 @@ function HowItWorks({ workflowSteps }) {
           <p className="mt-4 text-lg leading-8 text-slate-600 sm:text-xl">VerseCast supports the media team without removing human review.</p>
         </div>
 
-        <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
           {workflowSteps.map(([num, title, text]) => (
             <div key={num} className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#2b124c] text-lg font-bold text-[#f9e79f]">{num}</div>
@@ -182,14 +228,14 @@ function HowItWorks({ workflowSteps }) {
 /* ----------------------------- Benefits ----------------------------- */
 function Benefits({ benefitCards }) {
   return (
-    <section id="benefits" className="py-12 sm:py-16">
+    <section id="benefits" className="py-10 sm:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <div className="text-sm font-semibold uppercase tracking-[0.22em] text-[#2b124c] sm:text-base">Benefits</div>
           <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl lg:text-5xl">More ministry value, less technical distraction.</h2>
         </div>
 
-        <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {benefitCards.map(([title, text]) => (
             <div key={title} className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md">
               <div className="inline-flex rounded-2xl bg-[#f6f0ff] px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-[#2b124c]">Value</div>
@@ -206,7 +252,7 @@ function Benefits({ benefitCards }) {
 /* ----------------------------- Pricing ----------------------------- */
 function Pricing({ pricingPlans }) {
   return (
-    <section id="pricing" className="border-y border-slate-200 bg-slate-50 py-12 sm:py-16">
+    <section id="pricing" className="border-y border-slate-200 bg-slate-50 py-10 sm:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <div className="text-sm font-semibold uppercase tracking-[0.22em] text-[#2b124c] sm:text-base">Pricing</div>
@@ -214,7 +260,7 @@ function Pricing({ pricingPlans }) {
           <p className="mt-4 text-lg leading-8 text-slate-600">Placeholder pricing for your marketing launch. You can adjust these later when you finalize packaging.</p>
         </div>
 
-        <div className="mt-10 grid gap-5 lg:grid-cols-3">
+        <div className="mt-8 grid gap-5 lg:grid-cols-3">
           {pricingPlans.map(([title, price, features]) => (
             <div key={title} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
               <div className="text-xl font-semibold text-slate-900">{title}</div>
@@ -236,7 +282,7 @@ function Pricing({ pricingPlans }) {
 /* ----------------------------- WhoItsFor ----------------------------- */
 function WhoItsFor({ useCases }) {
   return (
-    <section className="bg-[#2b124c] py-12 text-white sm:py-16">
+    <section className="bg-[#2b124c] py-10 text-white sm:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
           <div>
@@ -259,7 +305,7 @@ function WhoItsFor({ useCases }) {
 /* ----------------------------- GetStarted ----------------------------- */
 function GetStarted() {
   return (
-    <section className="py-12 sm:py-16">
+    <section className="py-10 sm:py-16">
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
         <div className="rounded-[32px] border border-slate-200 bg-slate-50 p-6 shadow-sm sm:p-10 lg:p-12">
           <div className="max-w-3xl">
@@ -339,6 +385,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-white text-slate-900">
+      <StyleInjector />
       <Header />
       <main>
         <Hero heroCards={heroCards} />
