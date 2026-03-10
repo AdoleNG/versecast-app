@@ -58,7 +58,7 @@ export default function VerseCastMarketingSite() {
   const workflowSteps = [
     [
       "1",
-      "The minister preaches naturally",
+      "The minister speaks naturally",
       "VerseCast listens during live preaching and Bible teaching without requiring rigid commands or manual searching.",
     ],
     [
@@ -69,12 +69,12 @@ export default function VerseCastMarketingSite() {
     [
       "3",
       "The control panel shows the result",
-      "The media team can review the detected Bible passage first, then approve and display it with confidence.",
+      "If the minister paraphrased a verse, the media team confirms and authorizes the detected Bible passage to be displayed in one click.",
     ],
     [
       "4",
       "The Bible passage appears on screen",
-      "The congregation can follow visually while the minister and media team stay focused on the message.",
+      "The congregation follows visually while the minister and media team stay focused on the message.",
     ],
   ];
 
