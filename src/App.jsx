@@ -437,7 +437,7 @@ export default function VerseCastMarketingSite() {
 
               <div id="contact" className="mt-8">
                 <iframe
-                  src="https://tally.so/embed/0QMkX6?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1"
+                  src="https://tally.so/r/0QMkX6"
                   width="100%"
                   height="300"
                   frameBorder="0"
