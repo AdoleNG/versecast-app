@@ -16,6 +16,8 @@ export default function AcceptInvite() {
   const [success, setSuccess] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authChecked, setAuthChecked] = useState(false);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 
   // ---------------------------
   // AUTH SESSION CHECK
