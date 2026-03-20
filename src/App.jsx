@@ -9,7 +9,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<VerseCastMarketingSite />} />
-        <Route path="/accept-invite" element={<AcceptInvite />} />
+        <Route path="/accept-invite/:token" element={<AcceptInvite />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
       </Routes>

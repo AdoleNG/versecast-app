@@ -1,263 +1,131 @@
-import { useEffect, useMemo, useState } from "react";
-import { supabase } from "./supabaseclient";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default function AcceptInvite() {
-  const token = useMemo(() => {
-    const params = new URLSearchParams(window.location.search);
-    return params.get("token");
-  }, []);
-
+  const { token } = useParams();
   const [invite, setInvite] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [fullName, setFullName] = useState("");
-  const [success, setSuccess] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [authChecked, setAuthChecked] = useState(false);
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
-
-  // ---------------------------
-  // AUTH SESSION CHECK
-  // ---------------------------
+  // Fetch invitation details
   useEffect(() => {
-    let mounted = true;
-
-    const loadSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      const session = data?.session || null;
-
-      if (!mounted) return;
-
-      setIsAuthenticated(!!session);
-      setAuthChecked(true);
-    };
-
-    loadSession();
-
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        if (!mounted) return;
-        setIsAuthenticated(!!session);
-      }
-    );
-
-    return () => {
-      mounted = false;
-      listener.subscription.unsubscribe();
-    };
-  }, []);
-
-  // ---------------------------
-  // INVITE LOOKUP
-  // ---------------------------
-  useEffect(() => {
-    if (!token) {
-      setLoading(false);
-      setError("Invitation token is missing.");
-      return;
-    }
-
-    const fetchInvite = async () => {
+    async function fetchInvite() {
       try {
         const res = await fetch(`${API_BASE_URL}/operators/invitations/${token}`);
         const data = await res.json();
 
         if (!res.ok) {
-          throw new Error(data.detail || "Invalid or expired invitation.");
+          setError(data.detail || "Invalid or expired invitation.");
+        } else {
+          setInvite(data);
         }
-
-        setInvite(data);
       } catch (err) {
-        setError(err.message || "Failed to load invitation.");
+        setError("Failed to load invitation.");
       } finally {
         setLoading(false);
       }
-    };
+    }
 
     fetchInvite();
   }, [token]);
 
-  // ---------------------------
-  // ACCEPT INVITE
-  // ---------------------------
-  const handleAccept = async () => {
-    setError(null);
-
-    if (!fullName.trim()) {
-      setError("Please enter your full name.");
-      return;
-    }
-
-    const { data, error: sessionError } = await supabase.auth.getSession();
-    const session = data?.session;
-
-    if (sessionError || !session) {
-      setError("Please sign in first.");
-      return;
-    }
-
-    // Ensure logged-in user matches invited email
-    if (session.user.email !== invite.email) {
-      setError(`You must sign in as ${invite.email} to accept this invitation.`);
-      return;
-    }
+  async function handleAccept(e) {
+    e.preventDefault();
+    setError("");
+    setSubmitting(true);
 
     try {
       const res = await fetch(`${API_BASE_URL}/operators/accept-invite`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session.access_token}`,
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           token,
-          full_name: fullName.trim(),
+          full_name: fullName,
         }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.detail || "Failed to accept invitation.");
+        setError(data.detail || "Failed to accept invitation.");
+        setSubmitting(false);
+        return;
       }
 
-      setSuccess(true);
+      // Redirect to magic login link
+      if (data.login_url) {
+        window.location.href = data.login_url;
+      } else {
+        setError("Unexpected server response.");
+        setSubmitting(false);
+      }
     } catch (err) {
-      setError(err.message || "Failed to accept invitation.");
+      setError("Network error. Please try again.");
+      setSubmitting(false);
     }
-  };
-
-  // ---------------------------
-  // LOADING STATE
-  // ---------------------------
-  if (loading || !authChecked) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <div className="text-lg text-slate-700">Checking your invitation...</div>
-      </div>
-    );
   }
 
-  // ---------------------------
-  // INVITE ERROR
-  // ---------------------------
-  if (error && !invite) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 px-6">
-        <div className="max-w-md rounded-2xl bg-white p-8 shadow">
-          <h1 className="text-2xl font-bold text-slate-900">Invitation Error</h1>
-          <p className="mt-4 text-sm text-red-600">{error}</p>
-          <a
-            href="/"
-            className="mt-6 inline-block rounded-xl bg-[#2b124c] px-5 py-3 text-white"
-          >
-            Return to Home
-          </a>
-        </div>
-      </div>
-    );
+  if (loading) {
+    return <p>Loading invitation…</p>;
   }
 
-  // ---------------------------
-  // SUCCESS
-  // ---------------------------
-  if (success) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 px-6">
-        <div className="max-w-md rounded-2xl bg-white p-8 shadow text-center">
-          <h1 className="text-2xl font-bold text-slate-900">
-            Invitation accepted
-          </h1>
-          <p className="mt-4 text-slate-600">
-            Your VerseCast operator account is now ready.
-          </p>
-          <a
-            href="/"
-            className="mt-6 inline-block rounded-xl bg-[#2b124c] px-5 py-3 text-white"
-          >
-            Continue
-          </a>
-        </div>
-      </div>
-    );
+  if (error) {
+    return <p style={{ color: "red" }}>{error}</p>;
   }
 
-  // ---------------------------
-  // MAIN UI
-  // ---------------------------
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 px-6">
-      <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow">
-        <h1 className="text-2xl font-bold text-slate-900">You’ve been invited</h1>
+    <div style={{ maxWidth: 420, margin: "40px auto", padding: 20 }}>
+      <h2>Accept Invitation</h2>
 
-        <p className="mt-4 text-sm text-slate-600">
-          Join <strong>{invite?.church_name}</strong> as an operator on VerseCast.
-        </p>
+      <p>
+        You have been invited to join <strong>{invite.church_name}</strong> as an operator.
+      </p>
 
-        <p className="mt-2 text-sm text-slate-500">
-          Invited email: {invite?.email}
-        </p>
+      <p>Invited email: <strong>{invite.email}</strong></p>
 
-        {/* NOT AUTHENTICATED */}
-        {!isAuthenticated && (
-          <>
-            <p className="mt-6 text-sm text-slate-600">
-              Please sign in with <strong>{invite?.email}</strong> to accept this
-              invitation.
-            </p>
+      <form onSubmit={handleAccept} style={{ marginTop: 20 }}>
+        <label style={{ display: "block", marginBottom: 8 }}>
+          Full Name
+        </label>
 
-            <div className="mt-6 space-y-3">
-              <a
-                href={`/login?next=${encodeURIComponent(
-                  window.location.pathname + window.location.search
-                )}`}
-                className="block w-full rounded-xl bg-[#2b124c] px-5 py-3 text-center font-medium text-white transition hover:opacity-95"
-              >
-                Sign in to continue
-              </a>
+        <input
+          type="text"
+          placeholder="Enter your full name"
+          value={fullName}
+          onChange={(e) => setFullName(e.target.value)}
+          required
+          style={{
+            width: "100%",
+            padding: 10,
+            marginBottom: 15,
+            borderRadius: 6,
+            border: "1px solid #ccc",
+          }}
+        />
 
-              <a
-                href={`/signup?next=${encodeURIComponent(
-                  window.location.pathname + window.location.search
-                )}`}
-                className="block w-full rounded-xl border border-slate-300 px-5 py-3 text-center font-medium text-slate-700 transition hover:bg-slate-50"
-              >
-                Create account
-              </a>
-            </div>
-          </>
-        )}
+        <button
+          type="submit"
+          disabled={submitting}
+          style={{
+            width: "100%",
+            padding: 12,
+            background: "#4f46e5",
+            color: "white",
+            border: "none",
+            borderRadius: 6,
+            cursor: "pointer",
+            opacity: submitting ? 0.7 : 1,
+          }}
+        >
+          {submitting ? "Accepting…" : "Accept Invitation"}
+        </button>
+      </form>
 
-        {/* AUTHENTICATED */}
-        {isAuthenticated && (
-          <>
-            <div className="mt-6">
-              <label className="mb-2 block text-sm font-medium text-slate-700">
-                Full name
-              </label>
-              <input
-                type="text"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                placeholder="Enter your full name"
-                className="w-full rounded-lg border border-slate-300 px-4 py-3 outline-none focus:border-[#2b124c]"
-              />
-            </div>
-
-            {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
-
-            <button
-              onClick={handleAccept}
-              className="mt-6 w-full rounded-xl bg-[#2b124c] px-5 py-3 font-medium text-white transition hover:opacity-95"
-            >
-              Accept Invitation
-            </button>
-          </>
-        )}
-      </div>
+      {error && <p style={{ color: "red", marginTop: 12 }}>{error}</p>}
     </div>
   );
 }
