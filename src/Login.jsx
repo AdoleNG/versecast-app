@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { supabase } from "../supabaseClient";
+import { supabase } from "./supabaseClient";
+import VerseCastLogo from "./assets/VerseCastLogo.png";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -15,7 +16,7 @@ export default function Login() {
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          emailRedirectTo: window.location.origin, // Redirect back to your app
+          emailRedirectTo: window.location.origin,
         },
       });
 
@@ -32,56 +33,57 @@ export default function Login() {
   }
 
   return (
-    <div style={{ maxWidth: 420, margin: "40px auto", padding: 20 }}>
-      <h2>Sign in to VerseCast</h2>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+      <div className="w-full max-w-md bg-white shadow-lg rounded-xl p-8">
 
-      <p style={{ marginBottom: 20 }}>
-        Enter your email and we’ll send you a secure login link.
-      </p>
-
-      <form onSubmit={handleLogin}>
-        <label style={{ display: "block", marginBottom: 8 }}>
-          Email Address
-        </label>
-
-        <input
-          type="email"
-          placeholder="you@example.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          style={{
-            width: "100%",
-            padding: 10,
-            marginBottom: 15,
-            borderRadius: 6,
-            border: "1px solid #ccc",
-          }}
+        {/* VerseCast Logo */}
+        <img
+          src={VerseCastLogo}
+          alt="VerseCast Logo"
+          className="mx-auto h-20 w-20 mb-4"
         />
 
-        <button
-          type="submit"
-          disabled={loading}
-          style={{
-            width: "100%",
-            padding: 12,
-            background: "#4f46e5",
-            color: "white",
-            border: "none",
-            borderRadius: 6,
-            cursor: "pointer",
-            opacity: loading ? 0.7 : 1,
-          }}
-        >
-          {loading ? "Sending…" : "Send Login Link"}
-        </button>
-      </form>
+        <h2 className="text-2xl font-semibold text-gray-800 text-center">
+          Sign in to VerseCast
+        </h2>
 
-      {message && (
-        <p style={{ marginTop: 15, color: "#333" }}>
-          {message}
+        <p className="text-gray-600 text-center mt-2 mb-6">
+          Enter your email and we’ll send you a secure login link.
         </p>
-      )}
+
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Email Address
+            </label>
+
+            <input
+              type="email"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-70"
+          >
+            {loading ? "Sending…" : "Send Login Link"}
+          </button>
+        </form>
+
+        {message && (
+          <p className="text-center text-gray-700 mt-4">{message}</p>
+        )}
+
+        <p className="text-center text-xs text-gray-500 mt-6">
+          Powered by VerseCast — Illuminating Lives with the Word.
+        </p>
+      </div>
     </div>
   );
 }
