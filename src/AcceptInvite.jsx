@@ -102,7 +102,7 @@ export default function AcceptInvite() {
                 </label>
                 <input
                   type="text"
-                  placeholder="Enter your full name here"
+                  placeholder="Enter your full name"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   required
