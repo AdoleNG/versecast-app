@@ -1,5 +1,5 @@
+console.log("App is rendering");
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
 import AcceptInvite from "./AcceptInvite";
 import InvitationSuccess from "./InvitationSuccess";
 import Login from "./Login";
