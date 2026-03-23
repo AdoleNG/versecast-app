@@ -1,7 +1,9 @@
+console.log("MAIN.JSX IS RUNNING");
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
 import App from "./App.jsx";
+
+console.log("MAIN.JSX LOADED");
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

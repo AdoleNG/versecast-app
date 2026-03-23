@@ -1,22 +1,77 @@
 import { useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "./supabaseClient";
 import VerseCastLogo from "./assets/VerseCastLogo.png";
 
 export default function Dashboard() {
-  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState(null);
 
   useEffect(() => {
-    async function loadUser() {
-      const { data } = await supabase.auth.getUser();
-      setUser(data.user);
+    async function load() {
+      // 1. Check Supabase session
+      const { data } = await supabase.auth.getSession();
+      const session = data.session;
+
+      if (!session) {
+        navigate("/login");
+        return;
+      }
+
+      const token = session.access_token;
+
+      // 2. Check onboarding status
+      try {
+        const res = await fetch(
+          "https://versecast-backend.onrender.com/saas/onboarding/me",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        if (res.status === 404) {
+          // User exists in auth but not in public.users → onboarding required
+          navigate("/create-church");
+          return;
+        }
+
+        if (!res.ok) {
+          console.error("Unexpected /me response:", await res.text());
+          navigate("/login");
+          return;
+        }
+
+        const data = await res.json();
+        setProfile(data);
+        setLoading(false);
+      } catch (err) {
+        console.error("Dashboard load error:", err);
+        navigate("/login");
+      }
     }
-    loadUser();
-  }, []);
+
+    load();
+  }, [navigate]);
 
   async function handleLogout() {
     await supabase.auth.signOut();
-    window.location.href = "/login";
+    navigate("/login");
   }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-gray-700 text-lg">Loading dashboard…</p>
+      </div>
+    );
+  }
+
+  // Safely choose the best display name
+  const displayName =
+    profile.full_name ||
+    profile.email ||
+    "User";
 
   return (
     <div className="min-h-screen flex bg-gray-100">
@@ -29,33 +84,33 @@ export default function Dashboard() {
         </div>
 
         <nav className="flex-1 space-y-3">
-          <a
-            href="/control-panel"
+          <Link
+            to="/control-panel"
             className="block px-3 py-2 rounded-lg bg-blue-50 text-blue-700 font-medium"
           >
             Control Panel
-          </a>
+          </Link>
 
-          <a
-            href="/sessions"
+          <Link
+            to="/sessions"
             className="block px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-200"
           >
             Sessions
-          </a>
+          </Link>
 
-          <a
-            href="/operators"
+          <Link
+            to="/operators"
             className="block px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-200"
           >
             Operators
-          </a>
+          </Link>
 
-          <a
-            href="/settings"
+          <Link
+            to="/settings"
             className="block px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-200"
           >
             Settings
-          </a>
+          </Link>
         </nav>
 
         <button
@@ -69,11 +124,11 @@ export default function Dashboard() {
       {/* Main Content */}
       <main className="flex-1 p-10">
         <h2 className="text-3xl font-semibold text-gray-800">
-          Welcome{user ? `, ${user.user_metadata?.full_name}` : ""}
+          Welcome, {displayName}
         </h2>
 
         <p className="text-gray-600 mt-2">
-          This is your VerseCast operator dashboard. More features coming soon.
+          Church: {profile.church?.name}
         </p>
 
         <div className="mt-10 bg-white shadow-md rounded-xl p-6">

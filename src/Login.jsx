@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "./supabaseClient";
 import VerseCastLogo from "./assets/VerseCastLogo.png";
 
@@ -7,6 +8,46 @@ export default function Login() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const navigate = useNavigate();
+
+  // 🔍 Check session + onboarding status
+  useEffect(() => {
+    async function checkSession() {
+      const { data } = await supabase.auth.getSession();
+      const session = data.session;
+
+      if (!session) return;
+
+      try {
+        const token = session.access_token;
+
+        const res = await fetch(
+          "https://versecast-backend.onrender.com/saas/onboarding/me",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        if (res.status === 404) {
+          navigate("/create-church");
+          return;
+        }
+
+        if (res.ok) {
+          navigate("/dashboard");
+          return;
+        }
+
+        console.error("Unexpected onboarding response", await res.text());
+      } catch (err) {
+        console.error("Onboarding check failed:", err);
+      }
+    }
+
+    checkSession();
+  }, [navigate]);
+
+  // ✉️ EMAIL LOGIN (Magic Link)
   async function handleLogin(e) {
     e.preventDefault();
     setMessage("");
@@ -16,7 +57,7 @@ export default function Login() {
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          emailRedirectTo: window.location.origin,
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
         },
       });
 
@@ -32,11 +73,20 @@ export default function Login() {
     }
   }
 
+  // 🟣 GITHUB LOGIN (OAuth)
+  async function handleGithubLogin() {
+    await supabase.auth.signInWithOAuth({
+      provider: "github",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="w-full max-w-md bg-white shadow-lg rounded-xl p-8">
 
-        {/* VerseCast Logo */}
         <img
           src={VerseCastLogo}
           alt="VerseCast Logo"
@@ -75,6 +125,14 @@ export default function Login() {
             {loading ? "Sending…" : "Send Login Link"}
           </button>
         </form>
+
+        <button
+          type="button"
+          onClick={handleGithubLogin}
+          className="w-full bg-gray-800 text-white py-2 rounded-lg hover:bg-gray-900 transition mt-4"
+        >
+          Sign in with GitHub
+        </button>
 
         {message && (
           <p className="text-center text-gray-700 mt-4">{message}</p>

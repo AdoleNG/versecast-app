@@ -5,6 +5,9 @@ export default function Sessions() {
   const [current, setCurrent] = useState(null);
   const [history, setHistory] = useState([]);
 
+  // Your Render backend base URL
+  const API_BASE = "https://versecast-backend.onrender.com";
+
   useEffect(() => {
     let active = true;
 
@@ -15,8 +18,8 @@ export default function Sessions() {
       const headers = { Authorization: `Bearer ${token}` };
 
       try {
-        const currentRes = await fetch("http://localhost:8000/sessions/current", { headers });
-        const historyRes = await fetch("http://localhost:8000/sessions/history", { headers });
+        const currentRes = await fetch(`${API_BASE}/sessions/current`, { headers });
+        const historyRes = await fetch(`${API_BASE}/sessions/history`, { headers });
 
         if (!active) return;
 
@@ -47,26 +50,31 @@ export default function Sessions() {
     const session = (await supabase.auth.getSession()).data.session;
     const token = session?.access_token;
 
-    const res = await fetch("http://localhost:8000/sessions/start", {
+    const res = await fetch(`${API_BASE}/sessions/start`, {
       method: "POST",
       headers: { Authorization: `Bearer ${token}` }
     });
 
     const data = await res.json();
 
+    if (!data?.id) {
+      console.error("Session ID missing:", data);
+      return;
+    }
+
     // Open Presenter in a new tab
     window.open(
-      `https://presenter.versecast.ca.ngrok.app/presenter/${data.id}`,
+      `${API_BASE}/presenter/${data.id}`,
       "_blank"
     );
 
     // Redirect current tab to Control Panel
-    window.location.href = `https://control.versecast.ca.ngrok.app/control/${data.id}`;
+    window.location.href = `${API_BASE}/control/${data.id}`;
   }
 
   function goToCurrent() {
     if (current?.id) {
-      window.location.href = `https://control.versecast.ca.ngrok.app/control/${current.id}`;
+      window.location.href = `${API_BASE}/control/${current.id}`;
     }
   }
 
