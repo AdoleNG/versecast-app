@@ -166,7 +166,7 @@ export default function VerseCastMarketingSite() {
         </div>
       </header>
 
-      {/* HERO */}
+      {/* HERO SECTION */}
       <main>
         <section className="relative overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(249,231,159,0.28),_transparent_28%),radial-gradient(circle_at_left,_rgba(43,18,76,0.07),_transparent_35%)]" />
@@ -277,7 +277,6 @@ export default function VerseCastMarketingSite() {
             </div>
           </div>
         </section>
-
         {/* HOW IT WORKS */}
         <section
           id="how-it-works"
@@ -391,7 +390,6 @@ export default function VerseCastMarketingSite() {
             </div>
           </div>
         </section>
-
         {/* WHO IT'S FOR */}
         <section className="bg-[#2b124c] py-20 text-white">
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -415,4 +413,66 @@ export default function VerseCastMarketingSite() {
                 {useCases.map((item) => (
                   <div
                     key={item}
-                    className="rounded-2xl border border-white/15 bg-white/5 px-
+                    className="rounded-2xl border border-white/15 bg-white/5 px-5 py-4 text-sm font-medium text-slate-100 backdrop-blur-sm"
+                  >
+                    {item}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* CONTACT */}
+        <section className="py-20">
+          <div className="mx-auto max-w-5xl px-6 lg:px-8">
+            <div className="rounded-[32px] border border-slate-200 bg-slate-50 p-8 shadow-sm sm:p-12">
+              <div className="max-w-3xl">
+                <div className="text-sm font-semibold uppercase tracking-[0.22em] text-[#2b124c]">
+                  Get started
+                </div>
+                <h2 className="mt-3 text-3xl font-bold tracking-tight text-[#2b124c] sm:text-4xl">
+                  Launch VerseCast for your church.
+                </h2>
+                <p className="mt-4 text-base leading-8 text-slate-600">
+                  Request a live demo, join the early access list, or start
+                  conversations about using VerseCast in your ministry.
+                </p>
+              </div>
+
+              <div id="contact" className="mt-8">
+                <iframe
+                  src="https://tally.so/embed/0QMkX6?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1"
+                  width="100%"
+                  height="300"
+                  frameBorder="0"
+                  marginHeight="0"
+                  marginWidth="0"
+                  title="VerseCast Waitlist"
+                ></iframe>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      {/* FOOTER */}
+      <footer className="border-t border-slate-200 bg-white">
+        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-8 text-sm text-slate-500 md:flex-row md:items-center md:justify-between lg:px-8">
+          <div>© 2026 VerseCast. Illuminating lives with the Word real-time.</div>
+          <div className="flex gap-6">
+            <a href="#benefits" className="transition hover:text-slate-900">
+              Benefits
+            </a>
+            <a href="#pricing" className="transition hover:text-slate-900">
+              Pricing
+            </a>
+            <a href="#contact" className="transition hover:text-slate-900">
+              Contact
+            </a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
