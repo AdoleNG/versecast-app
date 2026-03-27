@@ -16,7 +16,6 @@ export default function CreateChurch() {
     setLoading(true);
 
     try {
-      // Get Supabase session token
       const { data } = await supabase.auth.getSession();
       const session = data.session;
 
@@ -28,7 +27,6 @@ export default function CreateChurch() {
 
       const token = session.access_token;
 
-      // Call backend onboarding endpoint
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/saas/onboarding/create-church`,
         {
@@ -45,32 +43,23 @@ export default function CreateChurch() {
         }
       );
 
-      // Handle non-200 responses
       if (!response.ok) {
-        const err = await response.json().catch(() => null);
-        console.error("Create church failed:", err);
         setErrorMsg("Failed to create church. Please try again.");
         setLoading(false);
         return;
       }
 
-      // Parse successful JSON response
       const dataRes = await response.json();
-      console.log("Create church success:", dataRes);
 
-      // Validate expected fields
       if (!dataRes.church_id || !dataRes.user_id) {
-        console.error("Unexpected response:", dataRes);
-        setErrorMsg("Unexpected server response. Please try again.");
+        setErrorMsg("Unexpected server response.");
         setLoading(false);
         return;
       }
 
-      // Redirect to dashboard
       navigate("/dashboard");
-
     } catch (err) {
-      console.error("Onboarding error:", err);
+      console.error(err);
       setErrorMsg("Unexpected error. Please try again.");
     } finally {
       setLoading(false);
@@ -78,59 +67,197 @@ export default function CreateChurch() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div className="w-full max-w-md bg-white shadow-lg rounded-xl p-8">
-
-        <h2 className="text-2xl font-semibold text-gray-800 text-center">
-          Create Your Church
-        </h2>
-
-        <p className="text-gray-600 text-center mt-2 mb-6">
-          Welcome to VerseCast! Let’s set up your church profile.
-        </p>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Your Full Name
-            </label>
-            <input
-              type="text"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              required
-              className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
-              placeholder="John Doe"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Church Name
-            </label>
-            <input
-              type="text"
-              value={churchName}
-              onChange={(e) => setChurchName(e.target.value)}
-              required
-              className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
-              placeholder="New Life Worship Center"
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-70"
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#f5f5f5",
+        padding: "40px 20px",
+        fontFamily: '"Segoe UI", Arial, sans-serif',
+      }}
+    >
+      <div
+        style={{
+          maxWidth: "900px",
+          margin: "0 auto",
+          background: "#ffffff",
+          borderRadius: "16px",
+          boxShadow: "0 10px 25px rgba(0,0,0,0.08)",
+          overflow: "hidden",
+        }}
+      >
+        {/* HEADER */}
+        <div
+          style={{
+            background: "#2b124c",
+            color: "#ffffff",
+            padding: "40px",
+          }}
+        >
+          <h1
+            style={{
+              margin: 0,
+              fontSize: "30px",
+              fontWeight: "700",
+            }}
           >
-            {loading ? "Creating…" : "Create Church"}
-          </button>
-        </form>
+            Create Your Church
+          </h1>
 
-        {errorMsg && (
-          <p className="text-center text-red-600 mt-4">{errorMsg}</p>
-        )}
+          <p
+            style={{
+              marginTop: "10px",
+              fontSize: "15px",
+              color: "#dcd6f7",
+            }}
+          >
+            Welcome to VerseCast. Let’s set up your church profile.
+          </p>
+        </div>
+
+        {/* BODY */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+          }}
+        >
+          {/* FORM */}
+          <div style={{ padding: "40px" }}>
+            <h2
+              style={{
+                fontSize: "18px",
+                fontWeight: "600",
+                marginBottom: "20px",
+                color: "#111827",
+              }}
+            >
+              Church Details
+            </h2>
+
+            <form onSubmit={handleSubmit}>
+              <div style={{ marginBottom: "20px" }}>
+                <label style={{ fontWeight: "500" }}>Your Full Name</label>
+                <input
+                  type="text"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  required
+                  placeholder="John Doe"
+                  style={{
+                    width: "100%",
+                    padding: "12px",
+                    marginTop: "6px",
+                    borderRadius: "8px",
+                    border: "1px solid #ccc",
+                  }}
+                />
+              </div>
+
+              <div style={{ marginBottom: "20px" }}>
+                <label style={{ fontWeight: "500" }}>Church Name</label>
+                <input
+                  type="text"
+                  value={churchName}
+                  onChange={(e) => setChurchName(e.target.value)}
+                  required
+                  placeholder="New Life Worship Center"
+                  style={{
+                    width: "100%",
+                    padding: "12px",
+                    marginTop: "6px",
+                    borderRadius: "8px",
+                    border: "1px solid #ccc",
+                  }}
+                />
+              </div>
+
+              {errorMsg && (
+                <div
+                  style={{
+                    background: "#fee2e2",
+                    color: "#991b1b",
+                    padding: "10px",
+                    borderRadius: "8px",
+                    marginBottom: "16px",
+                    fontSize: "14px",
+                  }}
+                >
+                  {errorMsg}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={loading}
+                style={{
+                  width: "100%",
+                  padding: "12px",
+                  background: "#16a34a",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "8px",
+                  fontWeight: "600",
+                  cursor: loading ? "not-allowed" : "pointer",
+                }}
+              >
+                {loading ? "Creating..." : "Create Church →"}
+              </button>
+            </form>
+          </div>
+
+          {/* SIDE PANEL */}
+          <div
+            style={{
+              padding: "40px",
+              background: "#fafafa",
+              borderLeft: "1px solid #eee",
+            }}
+          >
+            <h2
+              style={{
+                fontSize: "18px",
+                fontWeight: "600",
+                marginBottom: "12px",
+              }}
+            >
+              What happens next?
+            </h2>
+
+            <p style={{ fontSize: "14px", color: "#555", lineHeight: "1.6" }}>
+              Once your church is created, you’ll be taken to your dashboard
+              where you can start a service or invite a member of your media team to operate your bible display system.
+            </p>
+
+            <div style={{ marginTop: "20px" }}>
+              <strong>Start Sessions</strong>
+              <p style={{ fontSize: "14px", color: "#555" }}>
+                Launch live bible display instantly.
+              </p>
+            </div>
+
+            <div style={{ marginTop: "16px" }}>
+              <strong>Invite Operators</strong>
+              <p style={{ fontSize: "14px", color: "#555" }}>
+                Add team members to assist during services.
+              </p>
+            </div>
+
+            <div
+              style={{
+                marginTop: "24px",
+                padding: "16px",
+                borderRadius: "10px",
+                background: "#ffffff",
+                border: "1px solid #eee",
+              }}
+            >
+              <strong style={{ color: "#2b124c" }}>VerseCast</strong>
+              <p style={{ fontSize: "14px", color: "#555" }}>
+               Illuminating the world with the Word in real-time.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
