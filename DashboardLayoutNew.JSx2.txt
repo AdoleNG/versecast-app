@@ -1,0 +1,216 @@
+DashboardLayoutNew.JSx2
+import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { supabase } from "./supabaseClient";
+
+export default function DashboardHome() {
+  const [me, setMe] = useState(null);
+  const location = useLocation();
+
+  // ⭐ StartSession logic
+  const base = import.meta.env.VITE_KJV_URL;
+
+  const handleStartSession = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    console.log("Opening control...");
+    window.open(`${base}/control/demo`, "_blank", "noopener,noreferrer");
+
+    console.log("Opening presenter...");
+    window.open(`${base}/presenter/demo`, "_blank", "noopener,noreferrer");
+
+    console.log("Both open calls executed.");
+  };
+
+  // ⭐ Only render this UI on /dashboard
+  if (location.pathname !== "/dashboard") {
+    return null;
+  }
+
+  useEffect(() => {
+    async function loadMe() {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData.session?.access_token;
+
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/saas/onboarding/me`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          credentials: "include",
+        }
+      );
+
+      const json = await res.json();
+      setMe(json);
+    }
+
+    loadMe();
+  }, []);
+
+  if (!me) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          background: "#f5f5f5",
+          padding: "30px",
+          fontFamily: '"Segoe UI", Arial, sans-serif',
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          color: "#555",
+          fontSize: "16px",
+        }}
+      >
+        Loading dashboard…
+      </div>
+    );
+  }
+
+  return (
+    <div
+      style={{
+        background: "#f5f5f5",
+        minHeight: "100vh",
+        width: "100%",
+        display: "flex",
+        justifyContent: "center",
+        padding: "40px 20px",
+        boxSizing: "border-box",
+        fontFamily: '"Segoe UI", Arial, sans-serif',
+      }}
+    >
+      {/* === MAIN PANEL WRAPPER (matches Control Panel .panel) === */}
+      <div
+        style={{
+          background: "#ffffff",
+          padding: "30px 40px",
+          borderRadius: "12px",
+          maxWidth: "1000px",
+          width: "100%",
+          margin: "40px auto",
+          boxShadow: "0 10px 28px rgba(0,0,0,0.08)",
+          border: "1px solid #f0f0f0",
+        }}
+      >
+        {/* USER NAME + CHURCH */}
+        <h1
+          style={{
+            marginTop: 0,
+            fontSize: "30px",
+            fontWeight: 800,
+            marginBottom: "10px",
+            color: "#333",
+          }}
+        >
+          VerseCast Dashboard
+        </h1>
+
+        <div
+          style={{
+            fontSize: "14px",
+            color: "#555",
+            marginBottom: "25px",
+          }}
+        >
+          {me?.full_name} — {me?.church?.name}
+        </div>
+
+        {/* WELCOME TEXT */}
+        <h2
+          style={{
+            fontSize: "22px",
+            fontWeight: 700,
+            marginBottom: "15px",
+            color: "#333",
+          }}
+        >
+          Welcome to Your Dashboard
+        </h2>
+
+        <p
+          style={{
+            fontSize: "15px",
+            color: "#555",
+            marginBottom: "35px",
+            lineHeight: "1.5",
+          }}
+        >
+          Manage your sessions, operators, and church settings from one place.
+          Everything you need to run VerseCast smoothly is right here.
+        </p>
+
+        {/* === START SESSION === */}
+        <div style={{ marginBottom: "35px" }}>
+          <div
+            style={{
+              fontSize: "18px",
+              fontWeight: 600,
+              marginBottom: "8px",
+              color: "#333",
+            }}
+          >
+            Start a Session
+          </div>
+
+          <p style={{ fontSize: "14px", color: "#555", marginBottom: "15px" }}>
+            Launch the Control Panel and begin presenting scripture.
+          </p>
+
+          <button
+            onClick={handleStartSession}
+            style={{
+              display: "inline-block",
+              background: "#16a34a",
+              color: "white",
+              padding: "10px 18px",
+              borderRadius: "6px",
+              fontSize: "15px",
+              textDecoration: "none",
+              fontWeight: 600,
+              border: "none",
+              cursor: "pointer",
+            }}
+          >
+            Go to Start Session →
+          </button>
+        </div>
+
+        {/* === OPERATORS === */}
+        <div style={{ marginBottom: "10px" }}>
+          <div
+            style={{
+              fontSize: "18px",
+              fontWeight: 600,
+              marginBottom: "8px",
+              color: "#333",
+            }}
+          >
+            Operators
+          </div>
+
+          <p style={{ fontSize: "14px", color: "#555", marginBottom: "15px" }}>
+            Invite and manage operators who can control VerseCast.
+          </p>
+
+          <Link
+            to="/dashboard/operators/invite"
+            style={{
+              display: "inline-block",
+              background: "#d9534f",
+              color: "white",
+              padding: "10px 18px",
+              borderRadius: "6px",
+              fontSize: "15px",
+              textDecoration: "none",
+              fontWeight: 600,
+            }}
+          >
+            Manage Operators →
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}

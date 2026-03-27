@@ -1,17 +1,23 @@
-import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import VerseCastLogo from "./assets/VerseCastLogo.png";
 
 export default function AcceptInvite() {
-  const { token } = useParams();
   const [invite, setInvite] = useState(null);
   const [fullName, setFullName] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loadingInvite, setLoadingInvite] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
-  // Fetch invitation details
+  const token = new URLSearchParams(window.location.search).get("token");
+
   useEffect(() => {
     async function fetchInvite() {
+      if (!token) {
+        setError("Invalid invitation link.");
+        setLoadingInvite(false);
+        return;
+      }
+
       try {
         const res = await fetch(
           `${import.meta.env.VITE_API_URL}/operators/invitations/${token}`
@@ -26,6 +32,8 @@ export default function AcceptInvite() {
         }
       } catch {
         setError("Network error. Please try again.");
+      } finally {
+        setLoadingInvite(false);
       }
     }
 
@@ -35,7 +43,7 @@ export default function AcceptInvite() {
   async function handleAccept(e) {
     e.preventDefault();
     setError("");
-    setLoading(true);
+    setSubmitting(true);
 
     try {
       const res = await fetch(
@@ -53,20 +61,23 @@ export default function AcceptInvite() {
         setError(data.detail || "Unable to accept invitation.");
       } else {
         window.location.href = `/invite-success?loginUrl=${encodeURIComponent(
-          data.login_url
+          data.login_url || ""
         )}`;
       }
     } catch {
       setError("Network error. Please try again.");
     } finally {
-      setLoading(false);
+      setSubmitting(false);
     }
+  }
+
+  if (loadingInvite) {
+    return <div className="p-8 text-center">Loading invitation...</div>;
   }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="w-full max-w-md bg-white shadow-lg rounded-xl p-8">
-
         <img
           src={VerseCastLogo}
           alt="VerseCast Logo"
@@ -112,10 +123,10 @@ export default function AcceptInvite() {
 
               <button
                 type="submit"
-                disabled={loading}
+                disabled={submitting}
                 className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-70"
               >
-                {loading ? "Accepting…" : "Accept Invitation"}
+                {submitting ? "Accepting…" : "Accept Invitation"}
               </button>
             </form>
           </>
