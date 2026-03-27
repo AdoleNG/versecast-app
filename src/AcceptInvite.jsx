@@ -291,7 +291,7 @@ export default function AcceptInvite() {
                     cursor: submitting ? "not-allowed" : "pointer",
                   }}
                 >
-                  {submitting ? "Accepting..." : "Accept Invitation →"}
+                  {submitting ? "Accepting..." : "Accept Invitation"}
                 </button>
               </form>
             )}
@@ -381,7 +381,7 @@ export default function AcceptInvite() {
                   lineHeight: 1.6,
                 }}
               >
-                Helping churches display scripture seamlessly in real time.
+                Illuminating lives with the Word real-time.
               </p>
             </div>
           </div>

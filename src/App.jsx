@@ -6,6 +6,7 @@ import Login from "./Login";
 import Signup from "./Signup";
 import AuthCallback from "./AuthCallback";
 import CreateChurch from "./CreateChurch";
+import VerseCastMarketingSite from "./VerseCastMarketingSite";
 
 // NEW DASHBOARD FILES
 import DashboardLayout from "./DashboardLayoutNew";
@@ -17,10 +18,16 @@ import OperatorsPage from "./OperatorsPage";
 import InviteOperator from "./operators/InviteOperator";
 
 function App() {
+  const isLocalhost = window.location.hostname === "localhost";
+
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Login />} />
+        {/* Root route: Marketing site in production, Login in dev */}
+        <Route
+          path="/"
+          element={isLocalhost ? <Login /> : <VerseCastMarketingSite />}
+        />
 
         <Route path="/accept-invite" element={<AcceptInvite />} />
         <Route path="/invite-success" element={<InvitationSuccess />} />
@@ -28,9 +35,11 @@ function App() {
 
         <Route path="/auth/callback" element={<AuthCallback />} />
 
+        {/* Explicit login + signup routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
 
+        {/* Dashboard routes */}
         <Route path="/dashboard" element={<DashboardLayout />}>
           <Route index element={<DashboardHome />} />
 

@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "./supabaseClient";
-import VerseCastLogo from "./assets/VerseCastLogo.png";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -37,8 +36,6 @@ export default function Login() {
           navigate("/dashboard");
           return;
         }
-
-        console.error("Unexpected onboarding response", await res.text());
       } catch (err) {
         console.error("Onboarding check failed:", err);
       }
@@ -84,63 +81,138 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div className="w-full max-w-md bg-white shadow-lg rounded-xl p-8">
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#f5f5f5",
+        padding: "40px 20px",
+        fontFamily: '"Segoe UI", Arial, sans-serif',
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <div
+        style={{
+          width: "100%",
+          maxWidth: "450px",
+          background: "#ffffff",
+          borderRadius: "16px",
+          boxShadow: "0 10px 25px rgba(0,0,0,0.08)",
+          overflow: "hidden",
+        }}
+      >
+        {/* HEADER */}
+        <div
+          style={{
+            background: "#2b124c",
+            color: "#ffffff",
+            padding: "32px",
+            textAlign: "center",
+          }}
+        >
+          <h1
+            style={{
+              margin: 0,
+              fontSize: "26px",
+              fontWeight: "700",
+            }}
+          >
+            Welcome Back
+          </h1>
 
-        <img
-          src={VerseCastLogo}
-          alt="VerseCast Logo"
-          className="mx-auto h-20 w-20 mb-4"
-        />
+          <p
+            style={{
+              marginTop: "8px",
+              fontSize: "14px",
+              color: "#dcd6f7",
+            }}
+          >
+            Sign in to continue to VerseCast
+          </p>
+        </div>
 
-        <h2 className="text-2xl font-semibold text-gray-800 text-center">
-          Sign in to VerseCast
-        </h2>
+        {/* BODY */}
+        <div style={{ padding: "32px" }}>
+          <form onSubmit={handleLogin}>
+            <div style={{ marginBottom: "20px" }}>
+              <label style={{ fontWeight: "500" }}>Email Address</label>
+              <input
+                type="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                style={{
+                  width: "100%",
+                  padding: "12px",
+                  marginTop: "6px",
+                  borderRadius: "8px",
+                  border: "1px solid #ccc",
+                }}
+              />
+            </div>
 
-        <p className="text-gray-600 text-center mt-2 mb-6">
-          Enter your email and we’ll send you a secure login link.
-        </p>
-
-        <form onSubmit={handleLogin} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Email Address
-            </label>
-
-            <input
-              type="email"
-              placeholder="you@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
+            <button
+              type="submit"
+              disabled={loading}
+              style={{
+                width: "100%",
+                padding: "12px",
+                background: "#16a34a",
+                color: "#fff",
+                border: "none",
+                borderRadius: "8px",
+                fontWeight: "600",
+                cursor: loading ? "not-allowed" : "pointer",
+              }}
+            >
+              {loading ? "Sending…" : "Send Login Link →"}
+            </button>
+          </form>
 
           <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-70"
+            type="button"
+            onClick={handleGithubLogin}
+            style={{
+              width: "100%",
+              padding: "12px",
+              background: "#111827",
+              color: "#fff",
+              border: "none",
+              borderRadius: "8px",
+              fontWeight: "600",
+              marginTop: "16px",
+              cursor: "pointer",
+            }}
           >
-            {loading ? "Sending…" : "Send Login Link"}
+            Sign in with GitHub
           </button>
-        </form>
 
-        <button
-          type="button"
-          onClick={handleGithubLogin}
-          className="w-full bg-gray-800 text-white py-2 rounded-lg hover:bg-gray-900 transition mt-4"
-        >
-          Sign in with GitHub
-        </button>
+          {message && (
+            <p
+              style={{
+                marginTop: "16px",
+                textAlign: "center",
+                color: "#444",
+                fontSize: "14px",
+              }}
+            >
+              {message}
+            </p>
+          )}
 
-        {message && (
-          <p className="text-center text-gray-700 mt-4">{message}</p>
-        )}
-
-        <p className="text-center text-xs text-gray-500 mt-6">
-          Powered by VerseCast — Illuminating Lives with the Word.
-        </p>
+          <p
+            style={{
+              textAlign: "center",
+              fontSize: "12px",
+              color: "#777",
+              marginTop: "24px",
+            }}
+          >
+            Powered by VerseCast — Illuminating Lives with the Word.
+          </p>
+        </div>
       </div>
     </div>
   );

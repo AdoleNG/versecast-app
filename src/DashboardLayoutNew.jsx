@@ -75,7 +75,7 @@ export default function DashboardLayoutNew() {
             color: "#333",
           }}
         >
-          VerseCast Dashboard
+          VerseCast
         </h1>
 
         <div
