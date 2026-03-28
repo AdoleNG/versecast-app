@@ -5,6 +5,11 @@ export default function VerseCastMarketingSite() {
       "AI-driven detection",
       "VerseCast listens during live preaching and detects Bible passages mentioned naturally by the minister.",
     ],
+      <img
+        src={verseCastLogo}
+        alt="VerseCast Logo"
+        className="h-10 w-auto"
+      />
     [
       "Less mental strain",
       "Reduces cognitive load for ministers and media teams during live services.",
