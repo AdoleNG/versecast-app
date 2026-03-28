@@ -1,4 +1,3 @@
-
 export default function VerseCastMarketingSite() {
   const heroCards = [
     [
@@ -125,9 +124,6 @@ export default function VerseCastMarketingSite() {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
           <div className="flex items-center gap-3">
             <img
-              src={verseCastLogo}
-              alt="VerseCast logo"
-              className="h-12 w-12 rounded-xl object-cover shadow-sm"
             />
             <div>
               <div className="text-lg font-semibold tracking-tight text-[#2b124c]">
