@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import AcceptInvite from "./AcceptInvite";
 import InvitationSuccess from "./InvitationSuccess";
@@ -17,31 +17,28 @@ import OperatorsPage from "./OperatorsPage";
 import InviteOperator from "./operators/InviteOperator";
 
 function App() {
-  const isLocalhost = window.location.hostname === "localhost";
-
   return (
     <BrowserRouter>
       <Routes>
-        {/* Root route: Marketing site in production, Login in dev */}
-        <Route
-          path="/"
-          element={isLocalhost ? <Login /> : <VerseCastMarketingSite />}
-        />
 
-        <Route path="/accept-invite" element={<AcceptInvite />} />
-        <Route path="/invite-success" element={<InvitationSuccess />} />
-        <Route path="/create-church" element={<CreateChurch />} />
+        {/* ⭐ Default route → ALWAYS go to /login */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
 
-        <Route path="/auth/callback" element={<AuthCallback />} />
-
-        {/* Explicit login + signup routes */}
+        {/* Auth routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/auth/callback" element={<AuthCallback />} />
 
-        {/* Dashboard routes */}
+        {/* Invitations */}
+        <Route path="/accept-invite" element={<AcceptInvite />} />
+        <Route path="/invite-success" element={<InvitationSuccess />} />
+
+        {/* Onboarding */}
+        <Route path="/create-church" element={<CreateChurch />} />
+
+        {/* Dashboard */}
         <Route path="/dashboard" element={<DashboardLayout />}>
           <Route index element={<DashboardHome />} />
-
           <Route path="sessions/start-session" element={<StartSession />} />
           <Route path="sessions/end-session" element={<EndSession />} />
 
@@ -50,6 +47,10 @@ function App() {
             <Route path="invite" element={<InviteOperator />} />
           </Route>
         </Route>
+
+        {/* Optional: keep marketing site accessible */}
+        <Route path="/marketing" element={<VerseCastMarketingSite />} />
+
       </Routes>
     </BrowserRouter>
   );
