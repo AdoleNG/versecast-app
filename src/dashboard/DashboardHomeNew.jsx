@@ -83,7 +83,7 @@ export default function DashboardHomeNew() {
       }
 
       // 2B. Call backend to end the session
-      const res = await fetch(`${api}/saas/sessions/end`, {
+      const res = await fetch(`${api}/saas/session/end`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
