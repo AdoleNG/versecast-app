@@ -117,7 +117,7 @@ export default function DashboardHomeNew() {
     <div
       style={{
         maxWidth: "700px",
-        margin: "0 auto",
+        margin: "0",
         padding: "0 20px",
         textAlign: "left",
         display: "block",
