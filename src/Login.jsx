@@ -118,7 +118,7 @@ export default function Login() {
               fontWeight: "700",
             }}
           >
-            Welcome Back
+            Welcome to VerseCast
           </h1>
 
           <p
@@ -128,7 +128,7 @@ export default function Login() {
               color: "#dcd6f7",
             }}
           >
-            Sign in to continue to VerseCast
+            Register or Sign in to continue to VerseCast
           </p>
         </div>
 
