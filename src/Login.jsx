@@ -128,7 +128,7 @@ export default function Login() {
               color: "#dcd6f7",
             }}
           >
-            Register or Sign in to continue to VerseCast
+            Register or Sign in to continue
           </p>
         </div>
 
@@ -167,7 +167,7 @@ export default function Login() {
                 cursor: loading ? "not-allowed" : "pointer",
               }}
             >
-              {loading ? "Sending…" : "Send Login Link →"}
+              {loading ? "Sending…" : "Send Login Link"}
             </button>
           </form>
 
