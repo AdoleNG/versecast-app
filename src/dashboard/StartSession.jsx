@@ -37,16 +37,12 @@ export default function StartSession() {
         alert("Failed to start session: " + body);
         return;
       }
+      alert("Remember to disable STT when service ends.");
 
       const json = await res.json();
       const sessionId = json.id;
 
-      // ✅ Show banner BEFORE opening new tabs
-      setShowReminder(true);
-
-      // Optional: auto-hide after 5 seconds
-      setTimeout(() => setShowReminder(false), 5000);
-
+      
       // Open Control Panel
       window.open(
         `${base}/control/${sessionId}?token=${token}`,
