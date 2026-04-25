@@ -158,7 +158,7 @@ export default function DashboardHomeNew() {
             border: "none",
           }}
         >
-          Start Session →
+          Start Session
         </button>
       </div>
 
@@ -186,7 +186,7 @@ export default function DashboardHomeNew() {
             border: "none",
           }}
         >
-          End Session →
+          End Session 
         </button>
       </div>
 
@@ -214,7 +214,7 @@ export default function DashboardHomeNew() {
             fontWeight: 600,
           }}
         >
-          Manage Operators →
+          Manage Operators
         </Link>
       </div>
     </div>

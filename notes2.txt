@@ -1,0 +1,16 @@
+versecast-backend is pointing to api_server.py (environment variables = supabase)
+The URL is https://versecast-backend.onrender.com
+
+versecast-backend-websocket is pointing to stt_websocket_server.py (environment variable = Azure key/region/VERSECAST_API_BASE =  https://api.versecast.ca) 
+The URL is https://versecast-backend-websocket.onrender.com/
+
+The frontend is currently pointing to my marketing site - www.versecast.ca (environment variables = Vite API URL/supabase URL/Supabase key
+The URL is https://versecast-frontend.onrender.com
+
+
+
+969 8625 8215
+
+254 89 30
+
+

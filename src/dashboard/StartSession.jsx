@@ -1,14 +1,15 @@
+import { useState } from "react";
 import { supabase } from "../supabaseClient";
 
 export default function StartSession() {
   const base = import.meta.env.VITE_KJV_URL;
+  const [showReminder, setShowReminder] = useState(false);
 
   const handleStart = async (e) => {
     e.preventDefault();
     e.stopPropagation();
 
     try {
-      // 1. Get Supabase token
       const { data: sessionData } = await supabase.auth.getSession();
       const token = sessionData.session?.access_token;
 
@@ -17,7 +18,6 @@ export default function StartSession() {
         return;
       }
 
-      // 2. Create session in backend
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/sessions/start`,
         {
@@ -39,11 +39,9 @@ export default function StartSession() {
       const json = await res.json();
       const sessionId = json.id;
 
-      // ⭐ 3. REMOVE LOCAL WORKER — no more http://127.0.0.1:8765/start-worker
-      // Cloud STT runs directly inside the Control Panel now.
+      // Show inline reminder banner
+      setShowReminder(true);
 
-      // ⭐ 4. Open Control Panel + Presenter using real session ID
-      // Pass token to Control Panel so STT can authenticate
       window.open(
         `${base}/control/${sessionId}?token=${token}`,
         "_blank",
@@ -55,8 +53,6 @@ export default function StartSession() {
         "_blank",
         "noopener,noreferrer"
       );
-
-      alert("Session started.");
     } catch (err) {
       console.error(err);
       alert("Could not start session.");
@@ -69,8 +65,14 @@ export default function StartSession() {
         Start Session
       </h1>
 
+      {showReminder && (
+        <div className="bg-yellow-100 border border-yellow-400 text-yellow-800 px-4 py-3 rounded mb-4">
+          Remember to disable STT when service ends
+        </div>
+      )}
+
       <p className="text-gray-600 text-lg leading-relaxed">
-        Starting a session will open the Control Panel.  
+        Starting a session will open the Control Panel.{" "}
         Use the <strong>Open Presenter</strong> button inside the Control Panel to launch the Presenter.
       </p>
 
