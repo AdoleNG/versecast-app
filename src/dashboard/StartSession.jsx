@@ -8,7 +8,6 @@ export default function StartSession() {
     e.stopPropagation();
 
     try {
-      // 1. Get Supabase token
       const { data: sessionData } = await supabase.auth.getSession();
       const token = sessionData.session?.access_token;
 
@@ -17,7 +16,6 @@ export default function StartSession() {
         return;
       }
 
-      // 2. Create session in backend
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/sessions/start`,
         {
@@ -39,23 +37,17 @@ export default function StartSession() {
       const json = await res.json();
       const sessionId = json.id;
 
-      // ✅ Show reminder BEFORE opening new tabs
-      alert("Remember to disable STT when service ends.");
-
-      // Open Control Panel
       window.open(
         `${base}/control/${sessionId}?token=${token}`,
         "_blank",
         "noopener,noreferrer"
       );
 
-      // Open Presenter
       window.open(
         `${base}/presenter/${sessionId}`,
         "_blank",
         "noopener,noreferrer"
       );
-
     } catch (err) {
       console.error(err);
       alert("Could not start session.");
@@ -69,7 +61,7 @@ export default function StartSession() {
       </h1>
 
       <p className="text-gray-600 text-lg leading-relaxed">
-        Starting a session will open the Control Panel.  
+        Starting a session will open the Control Panel.{" "}
         Use the <strong>Open Presenter</strong> button inside the Control Panel to launch the Presenter.
       </p>
 
