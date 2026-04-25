@@ -1,9 +1,7 @@
-import { useState } from "react";
 import { supabase } from "../supabaseClient";
 
 export default function StartSession() {
   const base = import.meta.env.VITE_KJV_URL;
-  const [showReminder, setShowReminder] = useState(false);
 
   const handleStart = async (e) => {
     e.preventDefault();
@@ -37,12 +35,13 @@ export default function StartSession() {
         alert("Failed to start session: " + body);
         return;
       }
-      alert("Remember to disable STT when service ends.");
 
       const json = await res.json();
       const sessionId = json.id;
 
-      
+      // ✅ Show reminder BEFORE opening new tabs
+      alert("Remember to disable STT when service ends.");
+
       // Open Control Panel
       window.open(
         `${base}/control/${sessionId}?token=${token}`,
@@ -68,13 +67,6 @@ export default function StartSession() {
       <h1 className="text-3xl font-extrabold text-gray-900">
         Start Session
       </h1>
-
-      {/* ✅ Inline reminder banner */}
-      {showReminder && (
-        <div className="bg-yellow-100 border border-yellow-400 text-yellow-800 px-4 py-3 rounded mb-4">
-          Remember to disable STT when service ends
-        </div>
-      )}
 
       <p className="text-gray-600 text-lg leading-relaxed">
         Starting a session will open the Control Panel.  
